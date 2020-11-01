@@ -1,0 +1,12 @@
+name: KitManager
+version: ${project.version}
+main: me.pljr.kitmanager.KitManager
+api-version: 1.13
+depend: [PLJRApi]
+authors: [9hx]
+description: Plugin for managing in-game kits.
+commands:
+  kit:
+    description: Main command for KitManager.
+  akit:
+    description: Admin command for KitManager.

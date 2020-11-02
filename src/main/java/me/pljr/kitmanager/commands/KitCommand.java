@@ -52,6 +52,7 @@ public class KitCommand extends CommandUtil implements CommandExecutor {
             }
 
             // /kit <kit>
+            if (!checkPerm(player, "kitmanager.kit." + args[0])) return false;
             if (!KitManager.getCoreKitManager().getKitNames().contains(args[0])){
                 sendMessage(player, CfgLang.lang.get(Lang.KIT_FAILURE_NO_KIT).replace("%kit", args[0]));
                 return false;

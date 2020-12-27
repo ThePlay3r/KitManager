@@ -1,78 +1,70 @@
 package me.pljr.kitmanager.commands;
 
 import me.pljr.kitmanager.KitManager;
-import me.pljr.kitmanager.config.CfgLang;
-import me.pljr.kitmanager.enums.Lang;
+import me.pljr.kitmanager.config.Lang;
 import me.pljr.kitmanager.objects.CoreKit;
 import me.pljr.kitmanager.objects.CorePlayer;
-import me.pljr.pljrapi.utils.ChatUtil;
-import me.pljr.pljrapi.utils.CommandUtil;
-import me.pljr.pljrapi.utils.FormatUtil;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import me.pljr.pljrapispigot.utils.CommandUtil;
+import me.pljr.pljrapispigot.utils.FormatUtil;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class KitCommand extends CommandUtil implements CommandExecutor {
+public class KitCommand extends CommandUtil {
+
+    public KitCommand(){
+        super("kit", "kitmanager.use");
+    }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)){
-            sendMessage(sender, CfgLang.lang.get(Lang.NO_CONSOLE));
-            return false;
-        }
-        if (!checkPerm(sender, "kitmanager.use")) return false;
-        Player player = (Player) sender;
+    public void onPlayerCommand(Player player, String[] args){
         UUID playerId = player.getUniqueId();
 
         if (args.length == 1){
             // /kit help
             if (args[0].equalsIgnoreCase("help")){
-                if (!checkPerm(player, "kitmanager.help")) return false;
-                sendHelp(player, CfgLang.help);
-                return true;
+                if (!checkPerm(player, "kitmanager.help")) return;
+                sendMessage(player, Lang.HELP);
+                return;
             }
 
             // /kit list
             if (args[0].equalsIgnoreCase("list")){
-                if (!checkPerm(player, "kitmanager.list")) return false;
-                sendMessage(player, CfgLang.lang.get(Lang.KITS_SUCCESS_TITLE));
+                if (!checkPerm(player, "kitmanager.list")) return;
+                sendMessage(player, Lang.KITS_SUCCESS_TITLE.get());
                 long currentTime = System.currentTimeMillis();
                 for (String kitName : KitManager.getCoreKitManager().getKitNames()){
                     if (!player.hasPermission("kitmanager.kit."+kitName)) continue;
                     if (KitManager.getPlayerManager().getCorePlayer(playerId).getCooldown(kitName) > currentTime){
-                        sendMessage(player, CfgLang.lang.get(Lang.KITS_SUCCESS_FORMAT_UNAVAILABLE).replace("%name", kitName));
+                        sendMessage(player, Lang.KITS_SUCCESS_FORMAT_UNAVAILABLE.get().replace("%name", kitName));
                     }else{
-                        sendMessage(player, CfgLang.lang.get(Lang.KITS_SUCCESS_FORMAT_AVAILABLE).replace("%name", kitName));
+                        sendMessage(player, Lang.KITS_SUCCESS_FORMAT_AVAILABLE.get().replace("%name", kitName));
                     }
                 }
-                return true;
+                return;
             }
 
             // /kit <kit>
-            if (!checkPerm(player, "kitmanager.kit." + args[0])) return false;
+            if (!checkPerm(player, "kitmanager.kit." + args[0])) return;
             if (!KitManager.getCoreKitManager().getKitNames().contains(args[0])){
-                sendMessage(player, CfgLang.lang.get(Lang.KIT_FAILURE_NO_KIT).replace("%kit", args[0]));
-                return false;
+                sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("%kit", args[0]));
+                return;
             }
             CorePlayer corePlayer = KitManager.getPlayerManager().getCorePlayer(playerId);
             long currentTime = System.currentTimeMillis();
             long cooldown = corePlayer.getCooldown(args[0]);
             if (cooldown > currentTime){
-                sendMessage(player, CfgLang.lang.get(Lang.KIT_FAILURE_COOLDOWN).replace("%time", FormatUtil.formatTime((cooldown-currentTime)/1000)));
-                return false;
+                sendMessage(player, Lang.KIT_FAILURE_COOLDOWN.get().replace("%time", FormatUtil.formatTime((cooldown-currentTime)/1000)));
+                return;
             }
             CoreKit coreKit = KitManager.getCoreKitManager().get(args[0]);
             KitManager.getCoreKitManager().give(coreKit, player);
             corePlayer.setCooldown(args[0], currentTime+coreKit.getCooldown()*1000);
             KitManager.getPlayerManager().setCorePlayer(playerId, corePlayer);
-            sendMessage(player, CfgLang.lang.get(Lang.KIT_SUCCESS).replace("%kit", args[0]));
-            return true;
+            sendMessage(player, Lang.KIT_SUCCESS.get().replace("%kit", args[0]));
+            return;
         }
 
-        if (checkPerm(player, "kitmanager.help")) sendHelp(player, CfgLang.help);
-        return false;
+        if (checkPerm(player, "kitmanager.help")) sendMessage(player, Lang.HELP);
     }
 }

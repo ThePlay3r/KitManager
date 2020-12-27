@@ -2,16 +2,14 @@ package me.pljr.kitmanager;
 
 import me.pljr.kitmanager.commands.AKitCommand;
 import me.pljr.kitmanager.commands.KitCommand;
-import me.pljr.kitmanager.config.CfgLang;
-import me.pljr.kitmanager.files.KitsFile;
+import me.pljr.kitmanager.config.Lang;
 import me.pljr.kitmanager.listeners.AsyncPlayerPreLoginListener;
 import me.pljr.kitmanager.listeners.PlayerQuitListener;
 import me.pljr.kitmanager.managers.CoreKitManager;
 import me.pljr.kitmanager.managers.PlayerManager;
 import me.pljr.kitmanager.managers.QueryManager;
-import me.pljr.pljrapi.PLJRApi;
-import me.pljr.pljrapi.database.DataSource;
-import me.pljr.pljrapi.managers.ConfigManager;
+import me.pljr.pljrapispigot.database.DataSource;
+import me.pljr.pljrapispigot.managers.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,7 +25,6 @@ public final class KitManager extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        if (!setupPLJRApi()) return;
         instance = this;
         setupConfig();
         setupManagers();
@@ -36,30 +33,16 @@ public final class KitManager extends JavaPlugin {
         setupCommands();
     }
 
-    private boolean setupPLJRApi(){
-        PLJRApi api = (PLJRApi) Bukkit.getServer().getPluginManager().getPlugin("PLJRApi");
-        if (api == null){
-            Bukkit.getConsoleSender().sendMessage("§cKitManager: PLJRApi not found, disabling plugin!");
-            getServer().getPluginManager().disablePlugin(this);
-            return false;
-        }else{
-            Bukkit.getConsoleSender().sendMessage("§aKitManager: Hooked into PLJRApi!");
-            return true;
-        }
-    }
-
     private void setupConfig(){
         saveDefaultConfig();
-        configManager = new ConfigManager(getConfig(), "§cKitManager:", "config.yml");
-        KitsFile.setupKitsFile(this);
-        kitConfigManager = new ConfigManager(KitsFile.getKitsFile(), "§cKitManager:", "kits.yml");
-        CfgLang.load(configManager);
+        configManager = new ConfigManager(this, "config.yml");
+        kitConfigManager = new ConfigManager(this, "kits.yml");
+        Lang.load(configManager);
     }
 
     private void setupManagers(){
         playerManager = new PlayerManager();
-        coreKitManager = new CoreKitManager();
-        coreKitManager.load(kitConfigManager);
+        coreKitManager = new CoreKitManager(kitConfigManager);
     }
 
     private void setupDatabase(){
@@ -92,6 +75,9 @@ public final class KitManager extends JavaPlugin {
     }
     public static CoreKitManager getCoreKitManager() {
         return coreKitManager;
+    }
+    public static ConfigManager getKitConfigManager() {
+        return kitConfigManager;
     }
 
     @Override

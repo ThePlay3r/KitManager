@@ -2,7 +2,7 @@ package me.pljr.kitmanager.managers;
 
 import me.pljr.kitmanager.KitManager;
 import me.pljr.kitmanager.objects.CorePlayer;
-import me.pljr.pljrapi.database.DataSource;
+import me.pljr.pljrapispigot.database.DataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 

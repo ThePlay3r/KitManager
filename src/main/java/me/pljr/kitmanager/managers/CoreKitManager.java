@@ -1,9 +1,8 @@
 package me.pljr.kitmanager.managers;
 
 import me.pljr.kitmanager.KitManager;
-import me.pljr.kitmanager.files.KitsFile;
 import me.pljr.kitmanager.objects.CoreKit;
-import me.pljr.pljrapi.managers.ConfigManager;
+import me.pljr.pljrapispigot.managers.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,21 +16,21 @@ import java.util.List;
 public class CoreKitManager {
     private final HashMap<String, CoreKit> kits;
     private final List<String> kitNames;
+    private final ConfigManager manager;
 
-    public CoreKitManager(){
+    public CoreKitManager(ConfigManager manager){
         this.kits = new HashMap<>();
         this.kitNames = new ArrayList<>();
-    }
+        this.manager = manager;
 
-    public void load(ConfigManager configManager){
-        ConfigurationSection cs = configManager.getConfigurationSection("");
+        ConfigurationSection cs = manager.getConfigurationSection("");
         for (String kit : cs.getKeys(false)){
             ConfigurationSection itemsCs = cs.getConfigurationSection(kit);
             List<ItemStack> items = new ArrayList<>();
-            int cooldown = configManager.getInt(kit+".cooldown");
+            int cooldown = manager.getInt(kit+".cooldown");
             for (String item : itemsCs.getKeys(false)){
                 if (item.equals("cooldown")) continue;
-                items.add(configManager.getItemStack(kit+"."+item));
+                items.add(manager.getItemStack(kit+"."+item));
             }
             kits.put(kit, new CoreKit(kit, cooldown, items));
             if (!kitNames.contains(kit)){
@@ -43,20 +42,20 @@ public class CoreKitManager {
     public void create(CoreKit coreKit){
         kits.put(coreKit.getName(), coreKit);
         kitNames.add(coreKit.getName());
-        FileConfiguration file = KitsFile.getKitsFile();
+        FileConfiguration config = manager.getConfig();
         int i = 1;
         for (ItemStack item : coreKit.getItems()){
-            file.set(coreKit.getName()+"."+i, item);
-            file.set(coreKit.getName()+".cooldown", coreKit.getCooldown());
+            config.set(coreKit.getName()+"."+i, item);
+            config.set(coreKit.getName()+".cooldown", coreKit.getCooldown());
             i++;
         }
-        KitsFile.saveKitsFile();
+        manager.save();
     }
 
     public void remove(String name){
-        FileConfiguration file = KitsFile.getKitsFile();
-        file.set(name, null);
-        KitsFile.saveKitsFile();
+        FileConfiguration config = manager.getConfig();
+        config.set(name, null);
+        manager.save();
         kits.remove(name);
         kitNames.remove(name);
     }

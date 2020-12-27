@@ -32,12 +32,12 @@ public class AKitCommand extends CommandUtil {
             // /akit <kit>
             if (!checkPerm(player, "kitmanager.admin.kit")) return;
             if (!KitManager.getCoreKitManager().getKitNames().contains(args[0])){
-                sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("%kit", args[0]));
+                sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("{kit}", args[0]));
                 return;
             }
             CoreKit coreKit = KitManager.getCoreKitManager().get(args[0]);
             KitManager.getCoreKitManager().give(coreKit, player);
-            sendMessage(player, Lang.KIT_SUCCESS.get().replace("%kit", args[0]));
+            sendMessage(player, Lang.KIT_SUCCESS.get().replace("{kit}", args[0]));
             return;
         }
 
@@ -46,11 +46,11 @@ public class AKitCommand extends CommandUtil {
             if (args[0].equalsIgnoreCase("remove")){
                 if (!checkPerm(player, "kitmanager.admin.remove")) return;
                 if (!KitManager.getCoreKitManager().getKitNames().contains(args[1])){
-                    sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("%kit", args[0]));
+                    sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("{kit}", args[0]));
                     return;
                 }
                 KitManager.getCoreKitManager().remove(args[1]);
-                sendMessage(player, Lang.AKIT_REMOVE_SUCCESS.get().replace("%kit", args[1]));
+                sendMessage(player, Lang.AKIT_REMOVE_SUCCESS.get().replace("{kit}", args[1]));
                 return;
             }
         }
@@ -61,14 +61,14 @@ public class AKitCommand extends CommandUtil {
                 if (!checkPerm(player, "kitmanager.admin.give")) return;
                 if (!checkPlayer(player, args[1])) return;
                 if (!KitManager.getCoreKitManager().getKitNames().contains(args[2])){
-                    sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("%kit", args[0]));
+                    sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("{kit}", args[0]));
                     return;
                 }
                 Player requestedPlayer = Bukkit.getPlayer(args[1]);
                 CoreKit coreKit = KitManager.getCoreKitManager().get(args[2]);
                 KitManager.getCoreKitManager().give(coreKit, requestedPlayer);
-                sendMessage(player, Lang.AKIT_GIVE_SUCCESS.get().replace("%player", args[1]).replace("%kit", args[2]));
-                sendMessage(requestedPlayer, Lang.AKIT_GIVE_SUCCESS_NOTIFY.get().replace("%player", player.getName()).replace("%kit", args[2]));
+                sendMessage(player, Lang.AKIT_GIVE_SUCCESS.get().replace("{player}", args[1]).replace("{kit}", args[2]));
+                sendMessage(requestedPlayer, Lang.AKIT_GIVE_SUCCESS_NOTIFY.get().replace("{player}", player.getName()).replace("{kit}", args[2]));
                 return;
             }
 
@@ -85,7 +85,7 @@ public class AKitCommand extends CommandUtil {
                 }
                 CoreKit coreKit = new CoreKit(kitName, kitCooldown, items);
                 KitManager.getCoreKitManager().create(coreKit);
-                sendMessage(player, Lang.AKIT_CREATE_SUCCESS.get().replace("%kit", kitName).replace("%cooldown", args[2]));
+                sendMessage(player, Lang.AKIT_CREATE_SUCCESS.get().replace("{kit}", kitName).replace("{cooldown}", args[2]));
                 return;
             }
         }
@@ -107,11 +107,11 @@ public class AKitCommand extends CommandUtil {
             // /akit remove <name>
             if (args[0].equalsIgnoreCase("remove")){
                 if (!KitManager.getCoreKitManager().getKitNames().contains(args[1])){
-                    sendMessage(sender, Lang.KIT_FAILURE_NO_KIT.get().replace("%kit", args[0]));
+                    sendMessage(sender, Lang.KIT_FAILURE_NO_KIT.get().replace("{kit}", args[0]));
                     return;
                 }
                 KitManager.getCoreKitManager().remove(args[1]);
-                sendMessage(sender, Lang.AKIT_REMOVE_SUCCESS.get().replace("%kit", args[1]));
+                sendMessage(sender, Lang.AKIT_REMOVE_SUCCESS.get().replace("{kit}", args[1]));
                 return;
             }
         }
@@ -121,14 +121,14 @@ public class AKitCommand extends CommandUtil {
             if (args[0].equalsIgnoreCase("give")){
                 if (!checkPlayer(sender, args[1])) return;
                 if (!KitManager.getCoreKitManager().getKitNames().contains(args[2])){
-                    sendMessage(sender, Lang.KIT_FAILURE_NO_KIT.get().replace("%kit", args[0]));
+                    sendMessage(sender, Lang.KIT_FAILURE_NO_KIT.get().replace("{kit}", args[0]));
                     return;
                 }
                 Player requestedPlayer = Bukkit.getPlayer(args[1]);
                 CoreKit coreKit = KitManager.getCoreKitManager().get(args[2]);
                 KitManager.getCoreKitManager().give(coreKit, requestedPlayer);
-                sendMessage(sender, Lang.AKIT_GIVE_SUCCESS.get().replace("%player", args[1]).replace("%kit", args[2]));
-                sendMessage(requestedPlayer, Lang.AKIT_GIVE_SUCCESS_NOTIFY.get().replace("%player", sender.getName()).replace("%kit", args[2]));
+                sendMessage(sender, Lang.AKIT_GIVE_SUCCESS.get().replace("{player}", args[1]).replace("{kit}", args[2]));
+                sendMessage(requestedPlayer, Lang.AKIT_GIVE_SUCCESS_NOTIFY.get().replace("{player}", sender.getName()).replace("{kit}", args[2]));
                 return;
             }
         }

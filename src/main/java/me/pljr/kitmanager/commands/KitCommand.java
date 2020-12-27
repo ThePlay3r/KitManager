@@ -36,9 +36,9 @@ public class KitCommand extends CommandUtil {
                 for (String kitName : KitManager.getCoreKitManager().getKitNames()){
                     if (!player.hasPermission("kitmanager.kit."+kitName)) continue;
                     if (KitManager.getPlayerManager().getCorePlayer(playerId).getCooldown(kitName) > currentTime){
-                        sendMessage(player, Lang.KITS_SUCCESS_FORMAT_UNAVAILABLE.get().replace("%name", kitName));
+                        sendMessage(player, Lang.KITS_SUCCESS_FORMAT_UNAVAILABLE.get().replace("{name}", kitName));
                     }else{
-                        sendMessage(player, Lang.KITS_SUCCESS_FORMAT_AVAILABLE.get().replace("%name", kitName));
+                        sendMessage(player, Lang.KITS_SUCCESS_FORMAT_AVAILABLE.get().replace("{name}", kitName));
                     }
                 }
                 return;
@@ -47,7 +47,7 @@ public class KitCommand extends CommandUtil {
             // /kit <kit>
             if (!checkPerm(player, "kitmanager.kit." + args[0])) return;
             if (!KitManager.getCoreKitManager().getKitNames().contains(args[0])){
-                sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("%kit", args[0]));
+                sendMessage(player, Lang.KIT_FAILURE_NO_KIT.get().replace("{kit}", args[0]));
                 return;
             }
             CorePlayer corePlayer = KitManager.getPlayerManager().getCorePlayer(playerId);
@@ -61,7 +61,7 @@ public class KitCommand extends CommandUtil {
             KitManager.getCoreKitManager().give(coreKit, player);
             corePlayer.setCooldown(args[0], currentTime+coreKit.getCooldown()*1000);
             KitManager.getPlayerManager().setCorePlayer(playerId, corePlayer);
-            sendMessage(player, Lang.KIT_SUCCESS.get().replace("%kit", args[0]));
+            sendMessage(player, Lang.KIT_SUCCESS.get().replace("{kit}", args[0]));
             return;
         }
 

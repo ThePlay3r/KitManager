@@ -60,8 +60,8 @@ public final class KitManager extends JavaPlugin {
     }
 
     private void setupCommands(){
-        getCommand("kit").setExecutor(new KitCommand());
-        getCommand("akit").setExecutor(new AKitCommand());
+        new KitCommand().registerCommand(this);
+        new AKitCommand().registerCommand(this);
     }
 
     public static KitManager getInstance() {

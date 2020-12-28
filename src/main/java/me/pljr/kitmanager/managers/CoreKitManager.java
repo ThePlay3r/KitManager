@@ -1,6 +1,5 @@
 package me.pljr.kitmanager.managers;
 
-import me.pljr.kitmanager.KitManager;
 import me.pljr.kitmanager.objects.CoreKit;
 import me.pljr.pljrapispigot.managers.ConfigManager;
 import org.bukkit.Material;

@@ -37,7 +37,7 @@ public final class KitManager extends JavaPlugin {
         saveDefaultConfig();
         configManager = new ConfigManager(this, "config.yml");
         kitConfigManager = new ConfigManager(this, "kits.yml");
-        Lang.load(configManager);
+        Lang.load(new ConfigManager(this, "lang.yml"));
     }
 
     private void setupManagers(){

@@ -27,7 +27,7 @@ public enum Lang {
 
     KIT_SUCCESS("§aKitManager §8» §fYou have received kit §b{kit}§f."),
     KIT_FAILURE_NO_KIT("§aKitManager §8» §b{kit} §fcould not be found."),
-    KIT_FAILURE_COOLDOWN("§aKitManager §8» §fYou must wait %time §fto get this kit!"),
+    KIT_FAILURE_COOLDOWN("§aKitManager §8» §fYou must wait {time} §fto get this kit!"),
     KITS_SUCCESS_TITLE("§aKitManager §8» §fYour kits:"),
     KITS_SUCCESS_FORMAT_AVAILABLE("§7- §f{name} <hover:show_text:'§eClick to get'><click:run_command:/kit {name}>§e#</click></hover> <hover:show_text:'§cClick to remove'><click:run_command:/akit remove {name}>§c✕</click></hover>"),
     KITS_SUCCESS_FORMAT_UNAVAILABLE("§7- §7{name} <hover:show_text:'§cClick to remove'><click:run_command:/akit remove {name}>§c✕</click></hover>"),

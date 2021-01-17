@@ -54,7 +54,7 @@ public class KitCommand extends CommandUtil {
             long currentTime = System.currentTimeMillis();
             long cooldown = corePlayer.getCooldown(args[0]);
             if (cooldown > currentTime){
-                sendMessage(player, Lang.KIT_FAILURE_COOLDOWN.get().replace("%time", FormatUtil.formatTime((cooldown-currentTime)/1000)));
+                sendMessage(player, Lang.KIT_FAILURE_COOLDOWN.get().replace("{time}", FormatUtil.formatTime((cooldown-currentTime)/1000)));
                 return;
             }
             CoreKit coreKit = KitManager.getCoreKitManager().get(args[0]);

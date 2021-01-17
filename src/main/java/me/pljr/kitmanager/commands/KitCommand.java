@@ -24,7 +24,7 @@ public class KitCommand extends CommandUtil {
             // /kit help
             if (args[0].equalsIgnoreCase("help")){
                 if (!checkPerm(player, "kitmanager.help")) return;
-                sendMessage(player, Lang.HELP);
+                sendMessage(player, Lang.HELP.get());
                 return;
             }
 
@@ -65,6 +65,6 @@ public class KitCommand extends CommandUtil {
             return;
         }
 
-        if (checkPerm(player, "kitmanager.help")) sendMessage(player, Lang.HELP);
+        if (checkPerm(player, "kitmanager.help")) sendMessage(player, Lang.HELP.get());
     }
 }

@@ -25,7 +25,7 @@ public class AKitCommand extends CommandUtil {
             // /akit help
             if (args[0].equalsIgnoreCase("help")){
                 if (!checkPerm(player, "kitmanager.admin.help")) return;
-                sendMessage(player, Lang.ADMIN_HELP);
+                sendMessage(player, Lang.ADMIN_HELP.get());
                 return;
             }
 
@@ -90,7 +90,7 @@ public class AKitCommand extends CommandUtil {
             }
         }
 
-        if (checkPerm(player, "kitmanager.admin.help")) sendMessage(player, Lang.ADMIN_HELP);
+        if (checkPerm(player, "kitmanager.admin.help")) sendMessage(player, Lang.ADMIN_HELP.get());
     }
 
     @Override
@@ -98,7 +98,7 @@ public class AKitCommand extends CommandUtil {
         if (args.length == 1){
             // /akit help
             if (args[0].equalsIgnoreCase("help")){
-                sendMessage(sender, Lang.ADMIN_HELP);
+                sendMessage(sender, Lang.ADMIN_HELP.get());
                 return;
             }
         }
@@ -133,6 +133,6 @@ public class AKitCommand extends CommandUtil {
             }
         }
 
-        sendMessage(sender, Lang.ADMIN_HELP);
+        sendMessage(sender, Lang.ADMIN_HELP.get());
     }
 }

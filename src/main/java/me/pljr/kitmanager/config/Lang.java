@@ -52,6 +52,7 @@ public enum Lang {
             }
             Lang.lang.put(lang, config.getString(lang.toString()));
         }
+        config.save();
     }
 
     public String get(){

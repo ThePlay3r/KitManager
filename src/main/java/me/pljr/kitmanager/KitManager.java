@@ -8,29 +8,48 @@ import me.pljr.kitmanager.listeners.PlayerQuitListener;
 import me.pljr.kitmanager.managers.CoreKitManager;
 import me.pljr.kitmanager.managers.PlayerManager;
 import me.pljr.kitmanager.managers.QueryManager;
+import me.pljr.pljrapispigot.PLJRApiSpigot;
 import me.pljr.pljrapispigot.database.DataSource;
 import me.pljr.pljrapispigot.managers.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 public final class KitManager extends JavaPlugin {
-    private static KitManager instance;
-    private static ConfigManager configManager;
-    private static ConfigManager kitConfigManager;
-    private static CoreKitManager coreKitManager;
-    private static PlayerManager playerManager;
-    private static QueryManager queryManager;
+
+    public static Logger log;
+
+    private PLJRApiSpigot pljrApiSpigot;
+
+    private ConfigManager configManager;
+    private ConfigManager kitConfigManager;
+
+    private CoreKitManager coreKitManager;
+    private PlayerManager playerManager;
+    private QueryManager queryManager;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        instance = this;
+        log = getLogger();
+        if (!setupPLJRApi()) return;
         setupConfig();
-        setupManagers();
         setupDatabase();
+        setupManagers();
         setupListeners();
         setupCommands();
+        setupPapi();
+    }
+
+    public boolean setupPLJRApi(){
+        if (PLJRApiSpigot.get() == null){
+            getLogger().warning("PLJRApi-Spigot is not enabled!");
+            return false;
+        }
+        pljrApiSpigot = PLJRApiSpigot.get();
+        return true;
     }
 
     private void setupConfig(){
@@ -40,13 +59,8 @@ public final class KitManager extends JavaPlugin {
         Lang.load(new ConfigManager(this, "lang.yml"));
     }
 
-    private void setupManagers(){
-        playerManager = new PlayerManager();
-        coreKitManager = new CoreKitManager(kitConfigManager);
-    }
-
     private void setupDatabase(){
-        DataSource dataSource = DataSource.getFromConfig(configManager);
+        DataSource dataSource = pljrApiSpigot.getDataSource(configManager);
         queryManager = new QueryManager(dataSource, this);
         queryManager.setupTables();
         for (Player player : Bukkit.getOnlinePlayers()){
@@ -54,37 +68,30 @@ public final class KitManager extends JavaPlugin {
         }
     }
 
+    private void setupManagers(){
+        playerManager = new PlayerManager(this, queryManager, true);
+        playerManager.initAutoSave();
+        coreKitManager = new CoreKitManager(kitConfigManager);
+    }
+
     private void setupListeners(){
-        getServer().getPluginManager().registerEvents(new AsyncPlayerPreLoginListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+        getServer().getPluginManager().registerEvents(new AsyncPlayerPreLoginListener(playerManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(playerManager), this);
     }
 
     private void setupCommands(){
-        new KitCommand().registerCommand(this);
-        new AKitCommand().registerCommand(this);
+        new KitCommand(playerManager, coreKitManager).registerCommand(this);
+        new AKitCommand(coreKitManager).registerCommand(this);
     }
 
-    public static KitManager getInstance() {
-        return instance;
-    }
-    public static PlayerManager getPlayerManager() {
-        return playerManager;
-    }
-    public static QueryManager getQueryManager() {
-        return queryManager;
-    }
-    public static CoreKitManager getCoreKitManager() {
-        return coreKitManager;
-    }
-    public static ConfigManager getKitConfigManager() {
-        return kitConfigManager;
+    private void setupPapi(){
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            new PapiExpansion(this, coreKitManager, playerManager).register();
+        }
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
-        for (Player player : Bukkit.getOnlinePlayers()){
-            queryManager.savePlayerSync(player.getUniqueId());
-        }
+        Bukkit.getOnlinePlayers().forEach(player -> playerManager.getPlayer(player.getUniqueId(), queryManager::savePlayer));
     }
 }
